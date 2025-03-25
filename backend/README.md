@@ -1,25 +1,23 @@
 # /users/register Endpoint Documentation
 
 ## Description
-
-This endpoint registers a new user into the Uber backend system. It accepts user data, validates the input, creates a new user entry, and returns the user object along with an authentication token upon successful registration.
+This endpoint registers a new user in the Uber backend system. It validates input data, creates a new user entry, and returns the user object along with an authentication token upon successful registration.
 
 ## Endpoint
-
 **POST** `/users/register`
 
 ## Request Body
-
 The request body must be in JSON format with the following structure:
 
-- `fullname`: An object containing:
-  - `firstname` (string, **required**, minimum 3 characters)
-  - `lastname` (string, optional)
-- `email` (string, **required**, must be a valid email address)
-- `password` (string, **required**, minimum 6 characters)
+| Field        | Type   | Required | Description |
+|-------------|--------|----------|-------------|
+| fullname    | Object | Yes      | Contains the user's full name. |
+| firstname   | String | Yes      | Must be at least 3 characters long. |
+| lastname    | String | No       | Optional field for last name. |
+| email       | String | Yes      | Must be a valid email address. |
+| password    | String | Yes      | Must be at least 6 characters long. |
 
 ### Example Request Body
-
 ```json
 {
   "fullname": {
@@ -29,14 +27,96 @@ The request body must be in JSON format with the following structure:
   "email": "john.doe@example.com",
   "password": "securePassword123"
 }
+```
 
-### Example Response
+### Example Response (Success)
+```json
+{
+  "user": {
+    "_id": "62e9e3b3c1f5b91234567890",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
 
-- `user` (object):
-  - `fullname` (object):
-    - `firstname` (string): User's first name (minimum 3 characters).
-    - `lastname` (string): User's last name (minimum 3 characters).
-  - `email` (string): User's email address (must be a valid email).
-  - `password` (string): User's password (minimum 6 characters).
-- `token` (String): JWT Token
+### Example Response (Validation Errors)
+```json
+{
+  "errors": [
+    { "type": "field", "msg": "Invalid email", "path": "email", "location": "body" },
+    { "type": "field", "msg": "Use longer name", "path": "fullname.firstname", "location": "body" },
+    { "type": "field", "msg": "Password must be at least 6 characters", "path": "password", "location": "body" }
+  ]
+}
+```
+
+---
+
+# /users/login Endpoint Documentation
+
+## Description
+This endpoint allows a registered user to log into the Uber backend system. It validates the provided email and password, checks for authentication, and returns a JWT token upon successful login.
+
+## Endpoint
+**POST** `/users/login`
+
+## Request Body
+The request body must be in JSON format with the following structure:
+
+| Field     | Type   | Required | Description |
+|----------|--------|----------|-------------|
+| email    | String | Yes      | Must be a valid email address. |
+| password | String | Yes      | Must be at least 6 characters long. |
+
+### Example Request Body
+```json
+{
+  "email": "john.doe@example.com",
+  "password": "securePassword123"
+}
+```
+
+### Example Response (Success)
+```json
+{
+  "user": {
+    "_id": "62e9e3b3c1f5b91234567890",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+### Example Response (Invalid Credentials)
+```json
+{
+  "error": "Invalid email or password"
+}
+```
+
+### Example Response (Validation Errors)
+```json
+{
+  "errors": [
+    { "type": "field", "msg": "Enter a valid email", "path": "email", "location": "body" },
+    { "type": "field", "msg": "Password must be at least 6 characters", "path": "password", "location": "body" }
+  ]
+}
+```
+
+---
+
+### Notes
+- Ensure that the `Content-Type` is set to `application/json` when sending requests.
+- The JWT token should be stored securely and used for authentication in protected routes.
+- The password is **not returned** in the response for security reasons.
 

@@ -5,10 +5,17 @@ const userController=require("../controllers/user.controller")
 router.post("/register",[
     body('email').isEmail().withMessage('invalid email'),
     body('fullname.firstname').isLength({min:3}).withMessage('use longer name'),
-    body('password').isLength({min:6}).withMessage('password must be 6 word or more')
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+
 ],
+
    userController.registerUser
 )
-
+router.post("/login",[
+    body('email').isEmail().withMessage("enter valid mail"),
+body('password').isLength({min:6}).withMessage("password must be of 6 word atleast")
+],
+ userController.loginUser
+)
 
 module.exports=router
