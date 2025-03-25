@@ -115,6 +115,80 @@ The request body must be in JSON format with the following structure:
 
 ---
 
+# /users/profile Endpoint Documentation
+
+## Description
+This endpoint retrieves the authenticated user's profile information.
+
+## Endpoint
+**GET** `/users/profile`
+
+## Authentication
+- This endpoint requires a valid JWT token.
+- Token must be sent via cookies or the `Authorization` header as `Bearer <token>`.
+
+### Example Request (Using Authorization Header)
+```http
+GET /users/profile HTTP/1.1
+Host: localhost:4000
+Authorization: Bearer <your-jwt-token>
+```
+
+### Example Response (Success)
+```json
+{
+  "_id": "62e9e3b3c1f5b91234567890",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.doe@example.com"
+}
+```
+
+### Example Response (Unauthorized)
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+---
+
+# /users/logout Endpoint Documentation
+
+## Description
+This endpoint logs out the authenticated user by clearing their authentication token and blacklisting it.
+
+## Endpoint
+**GET** `/users/logout`
+
+## Authentication
+- Requires a valid JWT token.
+
+### Example Request
+```http
+GET /users/logout HTTP/1.1
+Host: localhost:4000
+Authorization: Bearer <your-jwt-token>
+```
+
+### Example Response (Success)
+```json
+{
+  "message": "logged out successfully"
+}
+```
+
+### Example Response (Unauthorized)
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+---
+
 ### Notes
 - Ensure that the `Content-Type` is set to `application/json` when sending requests.
 - The JWT token should be stored securely and used for authentication in protected routes.

@@ -1,7 +1,7 @@
 const userModel=require("../models/user.model")
 const userService=require("../services/user.service")
 const {validationResult}=require("express-validator")
-
+const blacklistTokenModel=require("../models/blacklistToken.model")
 
 module.exports.registerUser=async(req,res,next)=>{
 const errors=validationResult(req)
@@ -19,11 +19,13 @@ const user=await userService.createUser({
     email,
     password:hashedPassword
 })
-const token=user.generateAuthToken()
+const token=await user.generateAuthToken()
+
 res.status(201).json({user,token})
 }
 
 module.exports.loginUser = async (req, res, next) => {
+
     try {
         const errors = validationResult(req); // ✅ Corrected req instead of res
         if (!errors.isEmpty()) {
@@ -42,6 +44,7 @@ module.exports.loginUser = async (req, res, next) => {
         }
 
         const token = await user.generateAuthToken();
+        res.cookie("token",token)
 
         res.status(200).json({ user, token });
     } catch (error) {
@@ -49,3 +52,14 @@ module.exports.loginUser = async (req, res, next) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+module.exports.getUserProfile=async(req,res,next)=>{
+    res.status(200).json(req.user)
+}
+
+module.exports.logoutUser=async(req,res,next)=>{
+    res.clearCookie("token")
+    const token=req.cookies.token || req.headers.authorization.split(' ')[1]
+    await blacklistTokenModel.create({token})
+    res.status(200).json({message:"logged out successfully"})
+}
