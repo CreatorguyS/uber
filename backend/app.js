@@ -5,7 +5,7 @@ const cors = require("cors");
 const connectDB = require("./db/db");
 const userRoutes = require("./routes/user.routes");
 const cookieParser = require("cookie-parser");
-
+const captainRoutes=require("./routes/captain.routes")
 const app = express();
 
 // Use CORS with credentials support
@@ -17,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Move this BEFORE routes
 
 app.use('/users', userRoutes);
+app.use('/captains',captainRoutes)
 
 connectDB();
 

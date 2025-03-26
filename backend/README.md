@@ -57,49 +57,66 @@ The request body must be in JSON format with the following structure:
 
 ---
 
-# /users/login Endpoint Documentation
+# /captains/register Endpoint Documentation
 
 ## Description
-This endpoint allows a registered user to log into the Uber backend system. It validates the provided email and password, checks for authentication, and returns a JWT token upon successful login.
+This endpoint registers a new captain in the Uber backend system. It validates input data, creates a new captain entry, and returns the captain object along with an authentication token upon successful registration.
 
 ## Endpoint
-**POST** `/users/login`
+**POST** `/captains/register`
 
 ## Request Body
 The request body must be in JSON format with the following structure:
 
-| Field     | Type   | Required | Description |
-|----------|--------|----------|-------------|
-| email    | String | Yes      | Must be a valid email address. |
-| password | String | Yes      | Must be at least 6 characters long. |
+| Field        | Type   | Required | Description |
+|-------------|--------|----------|-------------|
+| fullname    | Object | Yes      | Contains the captain's full name. |
+| firstname   | String | Yes      | Must be at least 3 characters long. |
+| lastname    | String | No       | Optional field for last name. |
+| email       | String | Yes      | Must be a valid email address. |
+| password    | String | Yes      | Must be at least 6 characters long. |
+| vehicle     | Object | Yes      | Contains vehicle details of the captain. |
+| color       | String | Yes      | Must be at least 3 characters long. |
+| plate       | String | Yes      | Must be at least 3 characters long. |
+| capacity    | Number | Yes      | Must be at least 1. |
+| vehicleType | String | Yes      | Must be one of: `car`, `motorcycle`, `auto`. |
 
 ### Example Request Body
 ```json
 {
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
   "email": "john.doe@example.com",
-  "password": "securePassword123"
+  "password": "securePassword123",
+  "vehicle": {
+    "color": "Red",
+    "plate": "MP 04 XY 6204",
+    "capacity": 3,
+    "vehicleType": "car"
+  }
 }
 ```
 
 ### Example Response (Success)
 ```json
 {
-  "user": {
+  "captain": {
     "_id": "62e9e3b3c1f5b91234567890",
     "fullname": {
       "firstname": "John",
       "lastname": "Doe"
     },
-    "email": "john.doe@example.com"
+    "email": "john.doe@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "MP 04 XY 6204",
+      "capacity": 3,
+      "vehicleType": "car"
+    }
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-### Example Response (Invalid Credentials)
-```json
-{
-  "error": "Invalid email or password"
 }
 ```
 
@@ -107,83 +124,19 @@ The request body must be in JSON format with the following structure:
 ```json
 {
   "errors": [
-    { "type": "field", "msg": "Enter a valid email", "path": "email", "location": "body" },
-    { "type": "field", "msg": "Password must be at least 6 characters", "path": "password", "location": "body" }
+    { "type": "field", "msg": "Invalid email", "path": "email", "location": "body" },
+    { "type": "field", "msg": "Use longer name", "path": "fullname.firstname", "location": "body" },
+    { "type": "field", "msg": "Password must be at least 6 characters", "path": "password", "location": "body" },
+    { "type": "field", "msg": "Color must be at least 3 characters", "path": "vehicle.color", "location": "body" },
+    { "type": "field", "msg": "Plate must be at least 3 characters", "path": "vehicle.plate", "location": "body" }
   ]
 }
 ```
 
----
-
-# /users/profile Endpoint Documentation
-
-## Description
-This endpoint retrieves the authenticated user's profile information.
-
-## Endpoint
-**GET** `/users/profile`
-
-## Authentication
-- This endpoint requires a valid JWT token.
-- Token must be sent via cookies or the `Authorization` header as `Bearer <token>`.
-
-### Example Request (Using Authorization Header)
-```http
-GET /users/profile HTTP/1.1
-Host: localhost:4000
-Authorization: Bearer <your-jwt-token>
-```
-
-### Example Response (Success)
+### Example Response (Captain Already Exists)
 ```json
 {
-  "_id": "62e9e3b3c1f5b91234567890",
-  "fullname": {
-    "firstname": "John",
-    "lastname": "Doe"
-  },
-  "email": "john.doe@example.com"
-}
-```
-
-### Example Response (Unauthorized)
-```json
-{
-  "message": "Unauthorized"
-}
-```
-
----
-
-# /users/logout Endpoint Documentation
-
-## Description
-This endpoint logs out the authenticated user by clearing their authentication token and blacklisting it.
-
-## Endpoint
-**GET** `/users/logout`
-
-## Authentication
-- Requires a valid JWT token.
-
-### Example Request
-```http
-GET /users/logout HTTP/1.1
-Host: localhost:4000
-Authorization: Bearer <your-jwt-token>
-```
-
-### Example Response (Success)
-```json
-{
-  "message": "logged out successfully"
-}
-```
-
-### Example Response (Unauthorized)
-```json
-{
-  "message": "Unauthorized"
+  "message": "Captain already exists"
 }
 ```
 
