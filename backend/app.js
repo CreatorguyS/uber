@@ -9,7 +9,8 @@ const captainRoutes=require("./routes/captain.routes")
 const app = express();
 
 // Use CORS with credentials support
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
 
 // Middleware Order Matters!
 app.use(express.json());
