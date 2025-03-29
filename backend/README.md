@@ -1,13 +1,15 @@
-# /users/register Endpoint Documentation
+# Captain API Documentation
 
-## Description
+## **1. /users/register Endpoint**
+
+### **Description**  
 This endpoint registers a new user in the Uber backend system. It validates input data, creates a new user entry, and returns the user object along with an authentication token upon successful registration.
 
-## Endpoint
+### **Endpoint**  
 **POST** `/users/register`
 
-## Request Body
-The request body must be in JSON format with the following structure:
+### **Request Body**  
+The request body must be in JSON format:
 
 | Field        | Type   | Required | Description |
 |-------------|--------|----------|-------------|
@@ -17,7 +19,7 @@ The request body must be in JSON format with the following structure:
 | email       | String | Yes      | Must be a valid email address. |
 | password    | String | Yes      | Must be at least 6 characters long. |
 
-### Example Request Body
+### **Example Request Body**  
 ```json
 {
   "fullname": {
@@ -29,7 +31,7 @@ The request body must be in JSON format with the following structure:
 }
 ```
 
-### Example Response (Success)
+### **Example Response (Success)**  
 ```json
 {
   "user": {
@@ -44,7 +46,7 @@ The request body must be in JSON format with the following structure:
 }
 ```
 
-### Example Response (Validation Errors)
+### **Example Response (Validation Errors)**  
 ```json
 {
   "errors": [
@@ -57,16 +59,16 @@ The request body must be in JSON format with the following structure:
 
 ---
 
-# /captains/register Endpoint Documentation
+## **2. /captains/register Endpoint**
 
-## Description
+### **Description**  
 This endpoint registers a new captain in the Uber backend system. It validates input data, creates a new captain entry, and returns the captain object along with an authentication token upon successful registration.
 
-## Endpoint
+### **Endpoint**  
 **POST** `/captains/register`
 
-## Request Body
-The request body must be in JSON format with the following structure:
+### **Request Body**  
+The request body must be in JSON format:
 
 | Field        | Type   | Required | Description |
 |-------------|--------|----------|-------------|
@@ -81,7 +83,7 @@ The request body must be in JSON format with the following structure:
 | capacity    | Number | Yes      | Must be at least 1. |
 | vehicleType | String | Yes      | Must be one of: `car`, `motorcycle`, `auto`. |
 
-### Example Request Body
+### **Example Request Body**  
 ```json
 {
   "fullname": {
@@ -99,7 +101,7 @@ The request body must be in JSON format with the following structure:
 }
 ```
 
-### Example Response (Success)
+### **Example Response (Success)**  
 ```json
 {
   "captain": {
@@ -120,7 +122,7 @@ The request body must be in JSON format with the following structure:
 }
 ```
 
-### Example Response (Validation Errors)
+### **Example Response (Validation Errors)**  
 ```json
 {
   "errors": [
@@ -133,7 +135,7 @@ The request body must be in JSON format with the following structure:
 }
 ```
 
-### Example Response (Captain Already Exists)
+### **Example Response (Captain Already Exists)**  
 ```json
 {
   "message": "Captain already exists"
@@ -142,8 +144,24 @@ The request body must be in JSON format with the following structure:
 
 ---
 
-### Notes
-- Ensure that the `Content-Type` is set to `application/json` when sending requests.
-- The JWT token should be stored securely and used for authentication in protected routes.
-- The password is **not returned** in the response for security reasons.
+## **3. /captains/login, /captains/profile, /captains/logout Endpoints**
+
+### **Login Endpoint**
+**POST** `/captains/login`
+
+Allows a captain to log in and receive a JWT token.
+
+### **Profile Endpoint**
+**GET** `/captains/profile`
+
+Retrieves the authenticated captain's profile.
+
+### **Logout Endpoint**
+**POST** `/captains/logout`
+
+Logs out the captain by blacklisting the authentication token.
+
+Refer to the detailed sections below for full request and response examples.
+
+---
 
